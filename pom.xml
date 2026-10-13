@@ -16,6 +16,8 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <packaging>pom</packaging>
     <modules>
         <module>oj-modules</module>
+        <module>oj-common</module>
+        <module>oj-common/oj-common-core</module>
     </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
