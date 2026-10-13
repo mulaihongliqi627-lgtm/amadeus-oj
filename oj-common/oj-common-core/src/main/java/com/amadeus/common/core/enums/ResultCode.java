@@ -1,7 +1,9 @@
 package com.amadeus.common.core.enums;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public enum ResultCode {
 

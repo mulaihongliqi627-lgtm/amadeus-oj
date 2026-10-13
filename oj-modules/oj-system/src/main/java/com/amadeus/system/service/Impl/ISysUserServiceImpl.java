@@ -1,7 +1,8 @@
 package com.amadeus.system.service.Impl;
 
+import com.amadeus.common.core.domain.Result;
+import com.amadeus.common.core.enums.ResultCode;
 import com.amadeus.system.controller.LoginResult;
-import com.amadeus.system.controller.SysUserController;
 import com.amadeus.system.domain.SysUser;
 import com.amadeus.system.mapper.SysUserMapper;
 import com.amadeus.system.service.ISysUserService;
@@ -19,24 +20,24 @@ public class ISysUserServiceImpl implements ISysUserService {
     private SysUserMapper sysUserMapper;
 
     @Override
-    public LoginResult login(String userAccount, String password) {
+    public Result<Void> login(String userAccount, String password) {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         //从数据库中查询对应用户信息 == select password from tb_sys_user where user_account = ${userAccount};
         queryWrapper.select(SysUser::getPassword)
                 .eq(SysUser::getUserAccount, userAccount);
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
-        LoginResult loginResult = new LoginResult();
+        Result<Void> loginResult = new Result<>();
         if(sysUser == null){
-            loginResult.setCode(0);
-            loginResult.setMsg("用户不存在");
+            loginResult.setCode(ResultCode.FAILED_USER_NOT_EXISTS.getCode());
+            loginResult.setMsg(ResultCode.FAILED_USER_NOT_EXISTS.getMsg());
             return loginResult;
-        }else if(sysUser.getPassword().equals(password)){
-            loginResult.setCode(1);
-            loginResult.setMsg("用户登录成功");
+        }else if(password.equals(sysUser.getPassword())){
+            loginResult.setCode(ResultCode.SUCCESS.getCode());
+            loginResult.setMsg(ResultCode.SUCCESS.getMsg());
             return loginResult;
         }else{
-            loginResult.setCode(0);
-            loginResult.setMsg("用户名或密码错误");
+            loginResult.setCode(ResultCode.FAILED_LOGIN.getCode());
+            loginResult.setMsg(ResultCode.FAILED_LOGIN.getMsg());
             return loginResult;
         }
     }
