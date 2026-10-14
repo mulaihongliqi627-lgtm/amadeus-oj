@@ -5,7 +5,7 @@ spring:
   application:
     name: oj-system
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/bitoj_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3308/bitoj_dev?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: ojtest
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -17,15 +17,19 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modules>
         <module>oj-modules</module>
         <module>oj-common</module>
-        <module>oj-common/oj-common-core</module>
     </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <lombok.version>1.18.32</lombok.version>
         <spring-boot.version>3.0.1</spring-boot.version>
         <spring-cloud-alibaba.version>2022.0.0.0-RC2</spring-cloud-alibaba.version>
         <spring-cloud.version>2022.0.0</spring-cloud.version>
         <mybatis-plus.version>3.5.17</mybatis-plus.version>
+        <oj-common-core.version>1.0-SNAPSHOT</oj-common-core.version>
+        <oj-common-swagger.version>1.0-SNAPSHOT</oj-common-swagger.version>
+        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+        <oj-common-security.version>1.0-SNAPSHOT</oj-common-security.version>
     </properties>
     <dependencies>
         <!-- bootstrap 启动器 -->
@@ -41,6 +45,17 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     </dependencies>
     <dependencyManagement>
         <dependencies>
+            <!-- 项目内部公共模块版本统一管理 -->
+            <dependency>
+                <groupId>com.amadeus</groupId>
+                <artifactId>oj-common-core</artifactId>
+                <version>${oj-common-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amadeus</groupId>
+                <artifactId>oj-common-swagger</artifactId>
+                <version>${oj-common-core.version}</version>
+            </dependency>
             <!-- SpringCloud Alibaba 微服务 -->
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>

@@ -1,0 +1,18 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: oj-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: bitoj_dev
+      MYSQL_USER: ojtest
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: root123456
+      TZ: Asia/Shanghai
+    ports:
+      - "3308:3306"
+    volumes:
+      - oj-mysql-data:/var/lib/mysql
+
+volumes:
+  oj-mysql-data:
