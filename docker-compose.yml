@@ -14,5 +14,34 @@ services:
     volumes:
       - oj-mysql-data:/var/lib/mysql
 
+  nacos:
+    image: nacos/nacos-server:v2.2.3
+    container_name: oj-nacos
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      MODE: standalone
+      JVM_XMS: 256m
+      JVM_XMX: 256m
+      SPRING_DATASOURCE_PLATFORM: mysql
+      SPRING_SQL_INIT_PLATFORM: mysql
+      MYSQL_DATABASE_NUM: 1
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_DB_NAME: bitoj_nacos_local
+      MYSQL_SERVICE_DB_PARAM: characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      MYSQL_SERVICE_USER: ojtest
+      MYSQL_SERVICE_PASSWORD: 123456
+      DB_NUM: 1
+      DB_URL_0: jdbc:mysql://mysql:3306/bitoj_nacos_local?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      DB_USER_0: ojtest
+      DB_PASSWORD_0: 123456
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    volumes:
+      - ./nacos/application.properties:/home/nacos/conf/application.properties:ro
+
 volumes:
   oj-mysql-data:

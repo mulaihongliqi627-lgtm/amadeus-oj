@@ -1,0 +1,25 @@
+12:11:38.378 [main] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:11:43.621 [com.alibaba.nacos.client.Worker] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:11:48.727 [com.alibaba.nacos.client.Worker] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:11:51.241 [main] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:11:51.540 [com.alibaba.nacos.client.naming.security] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:11:53.813 [com.alibaba.nacos.client.Worker] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:11:56.626 [com.alibaba.nacos.client.naming.security] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:11:58.910 [com.alibaba.nacos.client.Worker] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:12:01.720 [com.alibaba.nacos.client.naming.security] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:12:04.001 [com.alibaba.nacos.client.Worker] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:12:07.000 [com.alibaba.nacos.client.naming.security] ERRORc.a.n.c.a.i.p.HttpLoginProcessor - [getResponse,102] - [NacosClientAuthServiceImpl] login http request failed url: http://localhost:8848/nacos/v1/auth/users/login, params: {username=nacos}, bodyMap: {password=nacos}, errorMsg: Server returned HTTP response code: 500 for URL: http://localhost:8848/nacos/v1/auth/users/login?username=nacos
+12:23:25.931 [main] ERRORo.s.b.d.LoggingFailureAnalysisReporter - [report,40] - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 9201 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 9201 or configure this application to listen on another port.
+

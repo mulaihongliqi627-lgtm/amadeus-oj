@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 public class TestDomain {
 
-    @TableId(value = "USER_ID", type = IdType.ASSIGN_ID)
-    private String testId;
+    @TableId(value = "test_id", type = IdType.ASSIGN_ID)
+    private Long testId;
 
     private String title;
 
