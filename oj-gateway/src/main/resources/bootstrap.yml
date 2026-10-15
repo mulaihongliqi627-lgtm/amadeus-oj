@@ -1,0 +1,30 @@
+server:
+  port: 19090
+
+spring:
+  application:
+    name: oj-gateway
+
+  profiles:
+    active: local
+
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      server-addr: localhost:8848
+
+      config:
+        username: nacos
+        password: nacos
+        server-addr: localhost:8848
+        context-path: /nacos
+        namespace: amadeus-oj
+        group: DEFAULT_GROUP
+        file-extension: yaml
+
+      discovery:
+        username: nacos
+        password: nacos
+        server-addr: localhost:8848
+        namespace: amadeus-oj
