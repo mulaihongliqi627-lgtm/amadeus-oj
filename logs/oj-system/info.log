@@ -1,0 +1,18 @@
+10:00:44.739 [main] INFO c.a.s.OjSystemApplication - [logStartupProfileInfo,630] - No active profile set, falling back to 1 default profile: "default"
+10:00:45.582 [main] INFO o.s.c.c.s.GenericScope - [setSerializationId,282] - BeanFactory id=76157015-ed2e-3e54-b421-a1f62cbf355a
+10:00:46.017 [main] INFO o.s.b.w.e.t.TomcatWebServer - [initialize,108] - Tomcat initialized with port(s): 9201 (http)
+10:00:46.031 [main] INFO o.a.c.h.Http11NioProtocol - [log,173] - Initializing ProtocolHandler ["http-nio-9201"]
+10:00:46.032 [main] INFO o.a.c.c.StandardService - [log,173] - Starting service [Tomcat]
+10:00:46.033 [main] INFO o.a.c.c.StandardEngine - [log,173] - Starting Servlet engine: [Apache Tomcat/10.1.4]
+10:00:46.173 [main] INFO o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring embedded WebApplicationContext
+10:00:46.174 [main] INFO o.s.b.w.s.c.ServletWebServerApplicationContext - [prepareWebApplicationContext,291] - Root WebApplicationContext: initialization completed in 1414 ms
+10:00:47.238 [main] INFO c.b.m.s.MybatisPlusApplicationContextAware - [setApplicationContext,43] - Register ApplicationContext instances org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@328572f0
+10:00:48.579 [main] INFO o.s.c.c.u.InetUtils - [convertAddress,170] - Cannot determine local hostname
+10:00:48.593 [main] INFO o.a.c.h.Http11NioProtocol - [log,173] - Starting ProtocolHandler ["http-nio-9201"]
+10:00:48.611 [main] INFO o.s.b.w.e.t.TomcatWebServer - [start,220] - Tomcat started on port(s): 9201 (http) with context path ''
+10:00:49.865 [main] INFO o.s.c.c.u.InetUtils - [convertAddress,170] - Cannot determine local hostname
+10:00:49.873 [main] INFO c.a.s.OjSystemApplication - [logStarted,57] - Started OjSystemApplication in 9.161 seconds (process running for 10.508)
+10:01:04.597 [http-nio-9201-exec-1] INFO o.a.c.c.C.[.[.[/] - [log,173] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+10:01:04.598 [http-nio-9201-exec-1] INFO o.s.w.s.DispatcherServlet - [initServletBean,532] - Initializing Servlet 'dispatcherServlet'
+10:01:04.599 [http-nio-9201-exec-1] INFO o.s.w.s.DispatcherServlet - [initServletBean,554] - Completed initialization in 1 ms
+10:01:04.659 [http-nio-9201-exec-1] INFO c.a.s.t.TestController - [testLog,27] - 我是Info级别的日志
