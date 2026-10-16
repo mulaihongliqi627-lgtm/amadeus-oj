@@ -31,6 +31,9 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <oj-common-swagger.version>1.0-SNAPSHOT</oj-common-swagger.version>
         <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
         <oj-common-security.version>1.0-SNAPSHOT</oj-common-security.version>
+        <hutool-all.version>5.8.22</hutool-all.version>
+        <jwt.version>0.9.1</jwt.version>
+        <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
     </properties>
     <dependencies>
         <!-- bootstrap 启动器 -->
