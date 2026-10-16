@@ -1,5 +1,7 @@
 package com.amadeus.system.test;
 
+import com.amadeus.common.redis.service.RedisService;
+import com.amadeus.system.domain.SysUser;
 import com.amadeus.system.test.service.ITestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class TestController {
     @Autowired
     private ITestService testService;
 
+    @Autowired
+    private RedisService redisService;
+
     @RequestMapping("/list")
     public List<?> getList(){
         return testService.list();
@@ -28,5 +33,14 @@ public class TestController {
         log.error("我是error级别的日志");
         log.warn("我是warn级别的日志");
         return "日志测试";
+    }
+
+    @GetMapping("/testRedis")
+    public String testRedis(){
+        SysUser sysUser = new SysUser();
+        sysUser.setUserAccount("userAccount");
+        redisService.setCacheObject("u",sysUser);
+        SysUser getUser = redisService.getCacheObject("u",SysUser.class);
+        return getUser.toString();
     }
 }

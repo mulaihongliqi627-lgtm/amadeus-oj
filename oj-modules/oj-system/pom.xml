@@ -48,6 +48,12 @@
             <artifactId>oj-common-security</artifactId>
             <version>${oj-common-security.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.amadeus</groupId>
+            <artifactId>oj-common-redis</artifactId>
+            <version>${oj-common-redis.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
