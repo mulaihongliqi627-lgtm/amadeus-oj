@@ -1,4 +1,4 @@
-package com.amadeus.system.domain;
+package com.amadeus.system.domain.sysuser.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

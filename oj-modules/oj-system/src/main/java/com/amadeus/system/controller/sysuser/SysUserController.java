@@ -1,12 +1,12 @@
-package com.amadeus.system.controller;
+package com.amadeus.system.controller.sysuser;
 
 import com.amadeus.common.core.constants.Constants;
 import com.amadeus.common.core.controller.BaseController;
 import com.amadeus.common.core.domain.Result;
 import com.amadeus.common.core.utils.ThreadLocalUtil;
-import com.amadeus.system.domain.LoginDTO;
-import com.amadeus.system.domain.SysUserSaveDTO;
-import com.amadeus.system.domain.SysUserVO;
+import com.amadeus.system.domain.sysuser.dto.LoginDTO;
+import com.amadeus.system.domain.sysuser.dto.SysUserSaveDTO;
+import com.amadeus.system.domain.sysuser.vo.SysUserVO;
 import com.amadeus.system.service.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

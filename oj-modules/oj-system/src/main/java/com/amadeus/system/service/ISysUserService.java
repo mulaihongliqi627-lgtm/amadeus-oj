@@ -1,8 +1,8 @@
 package com.amadeus.system.service;
 
 import com.amadeus.common.core.domain.Result;
-import com.amadeus.system.domain.SysUserSaveDTO;
-import com.amadeus.system.domain.SysUserVO;
+import com.amadeus.system.domain.sysuser.dto.SysUserSaveDTO;
+import com.amadeus.system.domain.sysuser.vo.SysUserVO;
 
 public interface ISysUserService {
     Result<String> login(String userAccount, String password);

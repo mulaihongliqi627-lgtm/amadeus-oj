@@ -12,7 +12,7 @@ import com.amadeus.common.redis.service.RedisService;
 import com.amadeus.common.security.handler.GlobalExceptionHandler;
 import com.amadeus.common.security.interceptor.TokenInterceptor;
 import com.amadeus.common.security.service.TokenService;
-import com.amadeus.system.controller.SysUserController;
+import com.amadeus.system.controller.sysuser.SysUserController;
 import com.amadeus.system.service.Impl.ISysUserServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

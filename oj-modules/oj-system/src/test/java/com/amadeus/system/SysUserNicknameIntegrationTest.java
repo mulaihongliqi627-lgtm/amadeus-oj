@@ -10,7 +10,7 @@ import com.amadeus.common.core.utils.JwtUtils;
 import com.amadeus.common.redis.service.RedisService;
 import com.amadeus.common.security.exception.ServiceException;
 import com.amadeus.common.security.service.TokenService;
-import com.amadeus.system.domain.SysUserSaveDTO;
+import com.amadeus.system.domain.sysuser.dto.SysUserSaveDTO;
 import com.amadeus.system.service.ISysUserService;
 import com.amadeus.system.utils.BCryptUtils;
 import com.fasterxml.jackson.databind.JsonNode;
