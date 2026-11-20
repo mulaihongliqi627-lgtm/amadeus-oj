@@ -22,8 +22,8 @@ export async function login(input: LoginInput) {
   return token
 }
 
-export function getUserInfo() {
-  return request<UserInfoResult>({ url: '/sysUser/info', method: 'GET' })
+export function getUserInfo(options?: { redirectOnUnauthorized?: boolean }) {
+  return request<UserInfoResult>({ url: '/sysUser/info', method: 'GET' }, true, options)
 }
 
 export function logout() {

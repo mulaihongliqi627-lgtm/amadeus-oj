@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { guardRoute } from './guard'
+
+export { getLoginDestination } from './guard'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,21 +54,7 @@ export const router = createRouter({
   ],
 })
 
-// Only return to known local admin routes; query strings cannot become redirect URLs.
-export function getLoginDestination(value: unknown): string {
-  return typeof value === 'string' &&
-    ['/dashboard', '/admins', '/questions', '/contests'].includes(value)
-    ? value
-    : '/dashboard'
-}
-
-router.beforeEach((to) => {
-  const auth = useAuthStore()
-  if (!to.meta.public && !auth.isLoggedIn) {
-    return { name: 'login', query: { redirect: to.path } }
-  }
-  if (to.name === 'login' && auth.isLoggedIn) return getLoginDestination(to.query.redirect)
-})
+router.beforeEach((to) => guardRoute(to, useAuthStore()))
 
 router.afterEach((to) => {
   document.title = `${String(to.meta.title || '管理工作台')} · Amadeus OJ`

@@ -16,10 +16,10 @@ export const useAuthStore = defineStore('auth', () => {
     writeSession(session.value)
   }
 
-  async function fetchAndPersistUserInfo() {
+  async function fetchAndPersistUserInfo(options?: { redirectOnUnauthorized?: boolean }) {
     const currentSession = session.value
     if (!currentSession) return
-    const info = await getUserInfo()
+    const info = await getUserInfo(options)
     if (session.value?.token !== currentSession.token) return
     session.value = { ...currentSession, account: info.userAccount, nickName: info.nickName }
     writeSession(session.value)

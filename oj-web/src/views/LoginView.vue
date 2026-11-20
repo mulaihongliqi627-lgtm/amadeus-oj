@@ -70,6 +70,9 @@ async function submit() {
       <div v-if="expired" class="notice warning" role="status">
         <AppIcon name="warning" /> 登录状态已失效，请重新登录。
       </div>
+      <div v-else-if="route.query.unavailable === '1'" class="notice warning" role="status">
+        <AppIcon name="warning" /> 暂时无法验证登录状态，请稍后刷新重试，或重新登录。
+      </div>
       <div v-if="error" class="notice error" role="alert">
         <AppIcon name="warning" /> {{ error }}
       </div>

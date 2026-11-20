@@ -40,7 +40,9 @@ VITE_API_TARGET=http://127.0.0.1:19090/system
 
 - Token 和登录账号保存在当前标签页的 `sessionStorage`，不保存密码。关闭标签页结束本地会话；存储被禁用时仅保存在内存。
 - 登录后通过 `GET /sysUser/info` 获取账号与昵称；获取失败则清除本地会话并提示错误。JWT 昵称仅作为展示回退，不用于授予权限。
-- 路由守卫只检查是否存在本地 Token；后端通过 JWT 和 Redis 校验真实登录状态。刷新恢复本地会话时不主动请求用户信息，服务端失效由后续受保护请求识别。
+- 全局前置守卫 `router.beforeEach` 在每次进入后台路由前调用 `GET /sysUser/info`，由后端校验 JWT 和 Redis 会话，验证通过后才挂载后台页面。未登录直接返回登录页，不发送后台请求。
+- 携带本地 Token 访问 `/login` 时同样先校验；有效则返回原目标页面（仅允许已知的本地后台路径），失效则清除 `sessionStorage` 中的会话并显示登录过期提示。无须清除 Cookie，当前实现没有使用 Cookie 保存 Token。
+- 校验遇到网络或服务故障时暂不放行后台页面，保留本地会话并在登录页提示重试；仅 HTTP 401 或业务码 3001 表示登录失效。校验请求由守卫负责跳转，其他业务请求继续使用统一失效处理，避免重复导航。
 - 受保护请求发送 `Authorization: Bearer <token>`；登录请求不带 Token。
 - 仅 `code === 1000` 视为成功；HTTP 401 或业务码 3001 清除会话并跳转登录。
 - “退出登录”调用 `POST /sysUser/logout`，无需请求体，只需携带当前 Bearer Token。后端先鉴权，再删除 `logintoken:<userKey>`，成功返回 `code: 1000`。前端随后清除本地会话并返回登录页。
@@ -52,6 +54,7 @@ VITE_API_TARGET=http://127.0.0.1:19090/system
 
 ```powershell
 pnpm typecheck
+pnpm test
 pnpm build
 pnpm preview
 ```

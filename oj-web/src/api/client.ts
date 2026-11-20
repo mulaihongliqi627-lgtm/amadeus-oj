@@ -25,10 +25,16 @@ export function onUnauthorized(handler: () => void) {
 
 const client = axios.create({ baseURL: '/api', timeout: 15000 })
 
-export async function request<T>(config: AxiosRequestConfig, authenticated = true): Promise<T> {
+export async function request<T>(
+  config: AxiosRequestConfig,
+  authenticated = true,
+  options: { redirectOnUnauthorized?: boolean } = {},
+): Promise<T> {
   const token = authenticated ? readSession()?.token : undefined
   const invalidateSession = () => {
-    if (token && token === readSession()?.token) unauthorizedHandler?.()
+    if (options.redirectOnUnauthorized !== false && token && token === readSession()?.token) {
+      unauthorizedHandler?.()
+    }
   }
 
   try {
@@ -42,7 +48,12 @@ export async function request<T>(config: AxiosRequestConfig, authenticated = tru
     }
     if (result.code === 3001) invalidateSession()
     if (result.code !== 1000) {
-      throw new ApiError(result.msg || '操作未完成，请稍后重试。', result.code)
+      throw new ApiError(
+        result.code === 3001 && authenticated
+          ? '登录状态已失效，请重新登录。'
+          : result.msg || '操作未完成，请稍后重试。',
+        result.code,
+      )
     }
     return result.data
   } catch (error) {
