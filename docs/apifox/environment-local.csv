@@ -1,0 +1,8 @@
+base_url,string,,false,http://localhost:9201,系统服务直连地址
+admin_account,string,,false,,填写已有管理员账号
+admin_password,string,,false,,仅在本地填写已有管理员密码
+token,string,,false,,管理员登录成功后自动保存完整JWT
+new_account,string,,false,apifox_admin_demo_01,新增测试账号重复运行前改名
+new_password,string,,false,ApifoxDemo_2026!,仅用于本地测试的新账号密码
+new_nickname,string,,false,Apifox测试管理员,用于校验中文昵称
+new_token,string,,false,,新账号登录后自动保存完整JWT

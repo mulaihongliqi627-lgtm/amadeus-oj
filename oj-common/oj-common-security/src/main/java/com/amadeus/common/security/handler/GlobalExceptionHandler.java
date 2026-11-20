@@ -2,9 +2,12 @@ package com.amadeus.common.security.handler;
 
 import com.amadeus.common.core.domain.Result;
 import com.amadeus.common.core.enums.ResultCode;
+import com.amadeus.common.security.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,6 +17,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    public Result<?> handleInvalidRequest(Exception e) {
+        return Result.fail(ResultCode.FAILED_PARAMS_VALIDATE);
+    }
+
+    @ExceptionHandler(ServiceException.class)
+    public Result<?> handleServiceException(ServiceException e) {
+        return Result.fail(e.getResultCode());
+    }
+
     /**
      * 请求方式不支持
      */

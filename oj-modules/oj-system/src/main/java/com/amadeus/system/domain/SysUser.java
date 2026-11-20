@@ -19,6 +19,7 @@ public class SysUser extends BaseEntity {
     @TableId(value = "user_id", type = IdType.ASSIGN_ID)
     private Long userId;
     private String userAccount;
+    private String nickName;
     private String password;
     private Long createBy;
     private LocalDateTime createTime;

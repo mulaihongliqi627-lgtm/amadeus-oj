@@ -1,0 +1,546 @@
+{
+  "info": {
+    "name": "用户管理联调（登录与昵称）",
+    "description": "适用于当前 amadeus-oj 项目。已有管理员登录 → 新增测试管理员 → 新管理员登录 → 异常场景。当前 new_account 已存在时，02 会返回3101，请换一个账号开始新一轮。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "用户管理联调（按编号执行）",
+      "item": [
+        {
+          "name": "01 已有管理员登录（自动保存 token）",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"admin_account\") || !pm.environment.get(\"admin_password\")) throw new Error(\"请先在当前环境的本地值填写 admin_account 和 admin_password\");",
+                  "pm.environment.unset(\"token\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 1000\", function () { pm.expect(body.code).to.eql(1000); });",
+                  "if (body.code === 1000 && typeof body.data === \"string\" && body.data.split(\".\").length === 3) { pm.environment.set(\"token\", body.data); } else { pm.environment.unset(\"token\"); }",
+                  "pm.test(\"返回完整 JWT\", function () { pm.expect(body.data).to.be.a(\"string\"); pm.expect(body.data.split(\".\")).to.have.lengthOf(3); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{admin_account}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "login"
+              ]
+            },
+            "description": "01 已有管理员登录（自动保存 token）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "02 新增管理员（含中文昵称）",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"token\")) throw new Error(\"请先运行 01 已有管理员登录，取得完整 JWT\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 1000\", function () { pm.expect(body.code).to.eql(1000); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{new_account}}\",\n  \"password\": \"{{new_password}}\",\n  \"nickName\": \"{{new_nickname}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "add"
+              ]
+            },
+            "description": "02 新增管理员（含中文昵称）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "03 新管理员登录（检查 JWT 昵称）",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.environment.unset(\"new_token\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 1000\", function () { pm.expect(body.code).to.eql(1000); });",
+                  "if (body.code === 1000 && typeof body.data === \"string\" && body.data.split(\".\").length === 3) { pm.environment.set(\"new_token\", body.data); } else { pm.environment.unset(\"new_token\"); }",
+                  "pm.test(\"返回完整 JWT\", function () { pm.expect(body.data).to.be.a(\"string\"); pm.expect(body.data.split(\".\")).to.have.lengthOf(3); });",
+                  "pm.test(\"JWT 中的 nickName 与新增昵称一致\", function () {",
+                  "  const CryptoJS = require(\"crypto-js\");",
+                  "  const payload = body.data.split(\".\")[1].replace(/-/g, \"+\").replace(/_/g, \"/\");",
+                  "  const claims = JSON.parse(CryptoJS.enc.Base64.parse(payload).toString(CryptoJS.enc.Utf8));",
+                  "  pm.expect(claims.nickName).to.eql(pm.environment.get(\"new_nickname\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{new_account}}\",\n  \"password\": \"{{new_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "login"
+              ]
+            },
+            "description": "03 新管理员登录（检查 JWT 昵称）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "04 重复新增同一账号（预期 3101）",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"token\")) throw new Error(\"请先运行 01 已有管理员登录，取得完整 JWT\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 3101\", function () { pm.expect(body.code).to.eql(3101); });",
+                  "pm.test(\"失败响应不返回数据\", function () { pm.expect(body.data).to.eql(null); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{new_account}}\",\n  \"password\": \"{{new_password}}\",\n  \"nickName\": \"{{new_nickname}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "add"
+              ]
+            },
+            "description": "04 重复新增同一账号（预期 3101）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "05 新增时缺少昵称（预期 3002）",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"token\")) throw new Error(\"请先运行 01 已有管理员登录，取得完整 JWT\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 3002\", function () { pm.expect(body.code).to.eql(3002); });",
+                  "pm.test(\"失败响应不返回数据\", function () { pm.expect(body.data).to.eql(null); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{new_account}}_missing_nick\",\n  \"password\": \"{{new_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "add"
+              ]
+            },
+            "description": "05 新增时缺少昵称（预期 3002）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "06 新增时昵称为空白（预期 3002）",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"token\")) throw new Error(\"请先运行 01 已有管理员登录，取得完整 JWT\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 3002\", function () { pm.expect(body.code).to.eql(3002); });",
+                  "pm.test(\"失败响应不返回数据\", function () { pm.expect(body.data).to.eql(null); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{new_account}}_blank_nick\",\n  \"password\": \"{{new_password}}\",\n  \"nickName\": \"   \"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "add"
+              ]
+            },
+            "description": "06 新增时昵称为空白（预期 3002）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "07 错误密码登录（预期 3103）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 3103\", function () { pm.expect(body.code).to.eql(3103); });",
+                  "pm.test(\"失败响应不返回数据\", function () { pm.expect(body.data).to.eql(null); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{new_account}}\",\n  \"password\": \"{{new_password}}__wrong\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "login"
+              ]
+            },
+            "description": "07 错误密码登录（预期 3103）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "08 不存在的账号登录（预期 3102）",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 3102\", function () { pm.expect(body.code).to.eql(3102); });",
+                  "pm.test(\"失败响应不返回数据\", function () { pm.expect(body.data).to.eql(null); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userAccount\": \"{{new_account}}_not_exists\",\n  \"password\": \"{{new_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "login"
+              ]
+            },
+            "description": "08 不存在的账号登录（预期 3102）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        },
+        {
+          "name": "09 JSON 格式错误（预期 3002）",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"token\")) throw new Error(\"请先运行 01 已有管理员登录，取得完整 JWT\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"HTTP 状态为 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"业务码为 3002\", function () { pm.expect(body.code).to.eql(3002); });",
+                  "pm.test(\"失败响应不返回数据\", function () { pm.expect(body.data).to.eql(null); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{invalid",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/sysUser/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sysUser",
+                "add"
+              ]
+            },
+            "description": "09 JSON 格式错误（预期 3002）。按编号运行；接口路径在两种环境中共用。JWT 解码断言仅检查内容，不验证签名或 Redis 登录状态。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -40,6 +40,24 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.amadeus</groupId>
+            <artifactId>oj-common-core</artifactId>
+            <version>${oj-common-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.amadeus</groupId>
+            <artifactId>oj-common-security</artifactId>
+            <version>${oj-common-security.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.amadeus</groupId>
+            <artifactId>oj-common-mybatis</artifactId>
+            <version>${oj-common-mybatis.version}</version>
+        </dependency>
     </dependencies>
 
 

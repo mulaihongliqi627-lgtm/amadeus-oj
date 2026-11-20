@@ -1,2 +1,4 @@
 com.amadeus.common.security.handler.GlobalExceptionHandler
 com.amadeus.common.security.service.TokenService
+com.amadeus.common.security.interceptor.TokenInterceptor
+com.amadeus.common.security.config.WebMvcConfig

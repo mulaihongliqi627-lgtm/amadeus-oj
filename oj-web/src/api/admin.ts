@@ -27,7 +27,7 @@ export function getUserInfo() {
 }
 
 export function logout() {
-  return request<null>({ url: '/sysUser/logout', method: 'POST' })
+  return request<null>({ url: '/sysUser/logout', method: 'DELETE' })
 }
 
 export function createAdmin(input: CreateAdminInput) {

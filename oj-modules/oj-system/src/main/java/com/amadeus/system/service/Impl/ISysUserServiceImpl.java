@@ -3,8 +3,11 @@ package com.amadeus.system.service.Impl;
 import com.amadeus.common.core.domain.Result;
 import com.amadeus.common.core.enums.ResultCode;
 import com.amadeus.common.core.enums.UserIdentity;
+import com.amadeus.common.security.exception.ServiceException;
 import com.amadeus.common.security.service.TokenService;
 import com.amadeus.system.domain.SysUser;
+import com.amadeus.system.domain.SysUserSaveDTO;
+import com.amadeus.system.domain.SysUserVO;
 import com.amadeus.system.mapper.SysUserMapper;
 import com.amadeus.system.service.ISysUserService;
 import com.amadeus.system.utils.BCryptUtils;
@@ -20,10 +23,8 @@ import static com.amadeus.common.core.enums.ResultCode.FAILED_USER_NOT_EXISTS;
 @Service
 public class ISysUserServiceImpl implements ISysUserService {
 
-
     @Autowired
     private SysUserMapper sysUserMapper;
-
 
     @Autowired
     private TokenService tokenService;
@@ -34,26 +35,58 @@ public class ISysUserServiceImpl implements ISysUserService {
     @Override
     public Result<String> login(String userAccount, String password) {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        //从数据库中查询对应用户信息 == select password from tb_sys_user where user_account = ${userAccount};
-        queryWrapper.select(SysUser::getUserId,SysUser::getPassword)
+        queryWrapper.select(SysUser::getUserId, SysUser::getPassword, SysUser::getNickName)
                 .eq(SysUser::getUserAccount, userAccount);
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
-//        Result<Void> loginResult = new Result<>();
-        if(sysUser == null){
-//            loginResult.setCode(ResultCode.FAILED_USER_NOT_EXISTS.getCode());
-//            loginResult.setMsg(ResultCode.FAILED_USER_NOT_EXISTS.getMsg());
-//            return loginResult;
+        if (sysUser == null) {
             return Result.fail(FAILED_USER_NOT_EXISTS);
-        }else if(BCryptUtils.matchesPassword(password,sysUser.getPassword())){
-//            loginResult.setCode(ResultCode.SUCCESS.getCode());
-//            loginResult.setMsg(ResultCode.SUCCESS.getMsg());
-//            return loginResult;
-            return Result.ok(tokenService.createToken(sysUser.getUserId(),secret, UserIdentity.ADMIN.getValue()));
-        }else{
-//            loginResult.setCode(ResultCode.FAILED_LOGIN.getCode());
-//            loginResult.setMsg(ResultCode.FAILED_LOGIN.getMsg());
-//            return loginResult;
+        } else if (password != null && sysUser.getPassword() != null
+                && BCryptUtils.matchesPassword(password, sysUser.getPassword())) {
+            return Result.ok(tokenService.createToken(
+                    sysUser.getUserId(), secret, UserIdentity.ADMIN.getValue(), sysUser.getNickName(), null));
+        } else {
             return Result.fail(ResultCode.FAILED_LOGIN);
         }
+    }
+
+    @Override
+    public int add(SysUserSaveDTO sysUserSaveDTO) {
+        if (sysUserSaveDTO == null || sysUserSaveDTO.getUserAccount() == null
+                || sysUserSaveDTO.getUserAccount().isBlank()
+                || sysUserSaveDTO.getNickName() == null || sysUserSaveDTO.getNickName().isBlank()
+                || sysUserSaveDTO.getPassword() == null || sysUserSaveDTO.getPassword().isBlank()) {
+            throw new ServiceException(ResultCode.FAILED_PARAMS_VALIDATE);
+        }
+        Long existingUserCount = sysUserMapper.selectCount(new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getUserAccount, sysUserSaveDTO.getUserAccount()));
+        if (existingUserCount > 0) {
+            throw new ServiceException(ResultCode.FAILED_USER_EXISTS);
+        }
+        SysUser sysUser = new SysUser();
+        sysUser.setUserAccount(sysUserSaveDTO.getUserAccount());
+        sysUser.setNickName(sysUserSaveDTO.getNickName());
+        sysUser.setPassword(BCryptUtils.encryptPassword(sysUserSaveDTO.getPassword()));
+        return sysUserMapper.insert(sysUser);
+    }
+
+    @Override
+    public Result<SysUserVO> getUserInfo(Long userId) {
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(SysUser::getUserAccount, SysUser::getNickName)
+                .eq(SysUser::getUserId, userId);
+        SysUser sysUser = sysUserMapper.selectOne(queryWrapper);
+        if (sysUser == null) {
+            return Result.fail(FAILED_USER_NOT_EXISTS);
+        }
+        SysUserVO vo = new SysUserVO();
+        vo.setUserAccount(sysUser.getUserAccount());
+        vo.setNickName(sysUser.getNickName());
+        return Result.ok(vo);
+    }
+
+    @Override
+    public Result<Void> logout(String userKey) {
+        return tokenService.deleteLoginUserByUserKey(userKey)
+                ? Result.ok() : Result.fail(ResultCode.FAILED_UNAUTHORIZED);
     }
 }

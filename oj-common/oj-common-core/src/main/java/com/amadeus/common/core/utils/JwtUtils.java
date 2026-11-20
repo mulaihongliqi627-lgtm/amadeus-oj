@@ -41,4 +41,8 @@ public class JwtUtils {
     public static String getUserId(Claims claims) {
         return toStr(claims.get(JwtConstants.LOGIN_USER_ID));
     }
+
+    public static String getNickName(Claims claims) {
+        return claims == null ? null : claims.get(JwtConstants.LOGIN_USER_NICK_NAME, String.class);
+    }
 }
